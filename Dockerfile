@@ -1,4 +1,5 @@
-FROM debian:10-slim
+FROM debian:10-slim 
+#FROM debian:9-slim # GCC 8.2 is inside deb 10, deb-9 has 6.3
 
 # image info
 LABEL description="Automated LFS build"
@@ -12,7 +13,7 @@ ENV LFS=/mnt/lfs
 ENV LC_ALL=POSIX
 ENV LFS_TGT=x86_64-lfs-linux-gnu
 ENV PATH=/tools/bin:/bin:/usr/bin:/sbin:/usr/sbin
-ENV MAKEFLAGS="-j 1"
+ENV MAKEFLAGS="-j8"
 
 # Defines how toolchain is fetched
 # 0 use LFS wget file
@@ -27,7 +28,7 @@ ENV LFS_TEST=0
 ENV LFS_DOCS=0
 
 # degree of parallelism for compilation
-ENV JOB_COUNT=1
+ENV JOB_COUNT=8
 
 # inital ram disk size in KB
 # must be in sync with CONFIG_BLK_DEV_RAM_SIZE
@@ -44,7 +45,13 @@ WORKDIR /bin
 RUN rm sh && ln -s bash sh
 
 # install required packages
-RUN apt-get update && apt-get install -y \
+RUN sed -i \
+       -e 's|deb.debian.org|archive.debian.org|g' \
+       -e 's|security.debian.org|archive.debian.org|g' \
+       -e '/buster-updates/d' \
+       /etc/apt/sources.list \
+ && apt-get -o Acquire::Check-Valid-Until=false update \
+ && apt-get install -y \
     build-essential                      \
     bison                                \
     file                                 \
