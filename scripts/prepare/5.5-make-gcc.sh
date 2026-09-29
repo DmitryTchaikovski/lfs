@@ -4,6 +4,24 @@ echo "Building gcc.."
 echo "Approximate build time: 8.9 SBU"
 echo "Required disk space: 2.2 GB"
 
+source /tools/common.sh
+print_env_vars
+check_environment
+
+# save current environment variables
+OLD_ENV_VARS=$(printenv)
+
+log_step_debug "Setting make flags and environment for single-threaded build"
+export MAKEFLAGS="-j1"
+log_step_debug "MAKEFLAGS set to: $MAKEFLAGS"
+
+export JOB_COUNT=1
+log_step_debug "JOB_COUNT set to: $JOB_COUNT"
+
+log_step_debug "Environment after setting make flags and job count:"
+print_env_vars
+
+
 # 5.5. Pass 1 GCC package contains the GNU compiler collection,
 # which includes the C and C++ compilers
 tar -xf gcc-*.tar.xz -C /tmp/ \
@@ -54,3 +72,11 @@ tar -xf gcc-*.tar.xz -C /tmp/ \
   && make install \
   && popd \
   && rm -rf /tmp/gcc
+
+
+# restore previous environment variables
+eval "$(echo "$OLD_ENV_VARS" | sed 's/"/\\"/g' | awk -F= '{print "export " $1 "=\"" $2 "\""}')"
+
+log_step_debug "Environment after restoring previous environment variables:"
+print_env_vars
+

@@ -1,4 +1,4 @@
-FROM debian:10-slim 
+FROM debian:9-slim 
 #FROM debian:9-slim # GCC 8.2 is inside deb 10, deb-9 has 6.3
 
 # image info
@@ -13,7 +13,7 @@ ENV LFS=/mnt/lfs
 ENV LC_ALL=POSIX
 ENV LFS_TGT=x86_64-lfs-linux-gnu
 ENV PATH=/tools/bin:/bin:/usr/bin:/sbin:/usr/sbin
-ENV MAKEFLAGS="-j8"
+ENV MAKEFLAGS="-j4"
 
 # Defines how toolchain is fetched
 # 0 use LFS wget file
@@ -28,7 +28,7 @@ ENV LFS_TEST=0
 ENV LFS_DOCS=0
 
 # degree of parallelism for compilation
-ENV JOB_COUNT=8
+ENV JOB_COUNT=4
 
 # inital ram disk size in KB
 # must be in sync with CONFIG_BLK_DEV_RAM_SIZE
@@ -45,11 +45,9 @@ WORKDIR /bin
 RUN rm sh && ln -s bash sh
 
 # install required packages
-RUN sed -i \
-       -e 's|deb.debian.org|archive.debian.org|g' \
-       -e 's|security.debian.org|archive.debian.org|g' \
-       -e '/buster-updates/d' \
-       /etc/apt/sources.list \
+# configure archived Debian 9 repositories and install required packages
+RUN echo "deb http://archive.debian.org/debian stretch main" > /etc/apt/sources.list \
+ && echo "deb http://archive.debian.org/debian-security stretch/updates main" >> /etc/apt/sources.list \
  && apt-get -o Acquire::Check-Valid-Until=false update \
  && apt-get install -y \
     build-essential                      \
@@ -85,6 +83,7 @@ COPY [ "scripts/run-all.sh",       \
        "scripts/prepare/",         \
        "scripts/build/",           \
        "scripts/image/",           \
+       "scripts/common.sh",        \
        "$LFS/tools/" ]
 # copy configuration
 COPY [ "config/kernel.config", "$LFS/tools/" ]
