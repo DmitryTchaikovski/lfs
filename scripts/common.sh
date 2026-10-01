@@ -3,9 +3,6 @@
 # Default log file location if not already defined
 STEP_LOG_FILE="${STEP_LOG_FILE:-/output/step_build_times.log}"
 
-# Default log file location if not already defined
-STEP_LOG_FILE="${STEP_LOG_FILE:-/output/step_build_times.log}"
-
 run_step() {
     local script_path="$1"
     local script_name

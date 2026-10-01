@@ -22,6 +22,11 @@ docker build --tag mylfs:8.2-my .
 echo "[+] Running LFS build container with mounted artifacts..."
 sudo docker run -it \
   --privileged \
+  --device=/dev/loop-control \
+  --device=/dev/loop0 \
+  --device=/dev/loop1 \
+  --device=/dev/loop2 \
+  --device=/dev/loop3 \
   --ulimit stack=-1:-1 \
   --name mylfs-my \
   -v "$SOURCES_DIR:/mnt/lfs/sources" \
@@ -38,4 +43,4 @@ elif docker cp mylfs-my:/tmp/lfs.iso "$OUTPUT_DIR/" 2>/dev/null; then
   echo "[✓] ISO copied to $OUTPUT_DIR/lfs.iso"
 fi
 
-echo "[✓] Build finished. Intermediate compiler artifacts are available in: $BUILD_DIR"
+echo "[✓] Build finished. "

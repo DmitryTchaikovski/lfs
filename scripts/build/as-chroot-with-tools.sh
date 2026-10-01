@@ -4,6 +4,7 @@ echo "Continue with chroot environment.."
 
 # SKIP remove the "I have no name!" promp
 
+export STEP_LOG_FILE="/sources/step_build_times.log"
 # Find the directory of this script, then source common.sh from one level up
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/common.sh"

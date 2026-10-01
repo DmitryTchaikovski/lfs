@@ -2,6 +2,10 @@
 set -e
 echo "Creating ramdisk.."
 
+source /tools/common.sh
+
+log_step_debug "Creating ramdisk image of size $IMAGE_SIZE KB"
+
 # Get the first available loopback device
 LOOP=$(losetup -f)
 echo "Loop device: $LOOP"

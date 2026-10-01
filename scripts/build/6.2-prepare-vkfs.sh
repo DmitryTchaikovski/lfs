@@ -1,6 +1,12 @@
 #!/bin/bash
 echo "Preparing Virtual Kernel File Systems.."
 
+# Find the directory of this script, then source common.sh from one level up
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/common.sh"
+
+log_step_debug "Creating directories onto which the file systems will be mounted"
+
 # create directories onto which the file systems will be mounted
 mkdir -pv $LFS/{dev,proc,sys,run}
 
@@ -20,3 +26,6 @@ mount -vt tmpfs tmpfs $LFS/run
 if [ -h $LFS/dev/shm ]; then
   mkdir -pv $LFS/$(readlink $LFS/dev/shm)
 fi
+
+log_step_debug "DEBUG: Mounted Virtual Kernel File Systems onto $LFS"
+

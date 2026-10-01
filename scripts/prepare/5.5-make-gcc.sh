@@ -11,11 +11,11 @@ check_environment
 # save current environment variables
 OLD_ENV_VARS=$(printenv)
 
-log_step_debug "Setting make flags and environment for single-threaded build"
-export MAKEFLAGS="-j1"
+log_step_debug "Setting make flags and environment for 8-threaded build"
+export MAKEFLAGS="-j8"
 log_step_debug "MAKEFLAGS set to: $MAKEFLAGS"
 
-export JOB_COUNT=1
+export JOB_COUNT=8
 log_step_debug "JOB_COUNT set to: $JOB_COUNT"
 
 log_step_debug "Environment after setting make flags and job count:"
